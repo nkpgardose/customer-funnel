@@ -1,8 +1,8 @@
-import './App.css'
+import styles from './App.module.css'
 
 function App() {
   return (
-    <h1>Hello App</h1>
+    <h1 className={styles.App}>Hello App</h1>
   )
 }
 
