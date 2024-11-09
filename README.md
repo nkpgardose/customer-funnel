@@ -2,6 +2,8 @@
 
 > Gathering customer information i.e. personal and loan details
 
+To see it running visit the [dev site](https://customer-funnel.fly.dev/)
+
 ### Getting Started
 
 The project is using [vite](https://vite.dev/guide/) for building a client-side react using typscript.
