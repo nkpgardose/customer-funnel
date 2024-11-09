@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import Field from './components/Field'
 import styles from './App.module.css'
 
 enum EmploymentStatuses {
@@ -47,32 +48,34 @@ function App() {
       <section>
         <h1 className={styles.App}>Fill in your details</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <label htmlFor="first-name-field">First Name</label>
-            <input type="text" id="first-name-field" {...register('firstName')} />
-            {errors.firstName?.message && <p>{errors.firstName.message}</p>}
-          </div>
-          <div>
-            <label htmlFor="last-name-field">Last Name</label>
-            <input
-              type="text"
-              id="last-name-field"
-              {...register('lastName')}
-            />
-            {errors.lastName?.message && <p>{errors.lastName.message}</p>}
-          </div>
-          <div>
-            <label htmlFor="email-field">Email</label>
-            <input type="email" id="email-field" {...register('email')} />
-            {errors.email?.message && <p>{errors.email.message}</p>}
-          </div>
+          <Field
+            fieldFor="first-name-field"
+            labelText="First Name"
+            registerResult={register('firstName')}
+            errorMessage={errors.firstName?.message}
+          />
+          <Field
+            fieldFor="last-name-field"
+            labelText="Last Name"
+            registerResult={register('lastName')}
+            errorMessage={errors.lastName?.message}
+          />
+          <Field
+            fieldFor="email-field"
+            labelText="Email"
+            inputAttributes={{
+              type: 'email'
+            }}
+            registerResult={register('email')}
+            errorMessage={errors.email?.message}
+          />
           <div>
             <label htmlFor="employment-status-select">Employment Status</label>
             <select id="employment-status-select" {...register('employmentStatus')}>
               <option value="">Open to see selections</option>
               {Object.entries(EmploymentOptions).map(item => {
                 return (
-                  <option value={item[0]}>{item[1]}</option>
+                  <option key={item[0]} value={item[0]}>{item[1]}</option>
                 );
               })}
             </select>

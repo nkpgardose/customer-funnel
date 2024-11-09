@@ -25,7 +25,7 @@ Open http://localhost:5173 with your browser to see the result.
 
 ## Unit tests
 
-Application is using Jest and React testing library for testing react components.
+Application is using vitest for testing react components.
 
 ```bash
 $ npm run test
