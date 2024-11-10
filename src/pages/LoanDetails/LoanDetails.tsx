@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSessionStorage } from "@uidotdev/usehooks";
 import { Field, Select } from '../../components/Field'
 import Button from '../../components/Button'
 
@@ -67,21 +68,25 @@ const loanFormSchema = z.object({
 
 export default function LoanDetails() {
 	const navigate = useNavigate()
+  const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', { loanDetails: {} });
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<z.infer<typeof loanFormSchema>>({
 		resolver: zodResolver(loanFormSchema),
-		defaultValues: {
+		defaultValues: customerStorageData.loanDetails || {
 			vehiclePrice: MIN_VEHICLE_PRICE,
 			deposit: MIN_DEPOSIT_PRICE,
 		}
 	})
 
 	function onSubmit(data: z.infer<typeof loanFormSchema>) {
-		console.log(data)
-		navigate('/results');
+		setCustomerStorageData({
+			...customerStorageData,
+			loanDetails: data
+		})
+		navigate('/results')
 	}
 
 	return (

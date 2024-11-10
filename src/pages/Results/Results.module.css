@@ -1,0 +1,13 @@
+.Results > .list {
+	list-style-type: none;
+	padding: 0;
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 1rem;
+}
+
+.Card {
+	border: 1px solid var(--border-color);
+	border-radius: .5rem;
+	padding: 1rem;
+}

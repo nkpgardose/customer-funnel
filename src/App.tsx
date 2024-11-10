@@ -5,6 +5,7 @@ import {
 } from "react-router-dom"
 import LoanDetails from "./pages/LoanDetails"
 import PersonalDetails from "./pages/PersonalDetails"
+import Results from "./pages/Results"
 import ErrorPage from "./ErrorPage";
 import styles from './App.module.css'
 
@@ -24,9 +25,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/results",
-        element: <div>Results Page!</div>
+        element: <Results />
       }
-
     ]
   },
 ]);
