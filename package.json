@@ -9,7 +9,9 @@
     "lint": "eslint src",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cypress:open": "cypress open",
+    "cypress:headless": "cypress run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "@flydotio/dockerfile": "^0.5.9",
+    "@testing-library/cypress": "^10.0.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
