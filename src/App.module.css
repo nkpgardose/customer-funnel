@@ -11,3 +11,8 @@
 	max-width: 20rem;
 	margin: 0 auto;
 }
+
+.App > .section > .link {
+	color: var(--content);
+	text-decoration: none;
+}

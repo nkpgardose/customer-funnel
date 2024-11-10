@@ -18,7 +18,7 @@ describe('PersonalDetails', () => {
 		expect(screen.getByRole('combobox', { name: /Employment Status/i }))
 	})
 
-	it('simulate error forms', async () => {
+	it('simulates error forms', async () => {
 		const user = userEvent.setup()
 		render(<PersonalDetails />)
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
@@ -28,7 +28,7 @@ describe('PersonalDetails', () => {
 		expect(screen.getByText('Please choose one of the options'))
 	});
 	
-	it('simulate filling info', async () => {
+	it('simulates filling info', async () => {
 		const navigate = vi.fn();
 		vi.mocked(useNavigate).mockReturnValue(navigate);
 		const user = userEvent.setup()

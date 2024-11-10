@@ -18,22 +18,23 @@ describe('LoanDetails', () => {
 		expect(screen.getByRole('combobox', { name: /Loan Term/i }))
 	})
 
-	it('simulate error forms', async () => {
+	it('simulates error forms', async () => {
 		const user = userEvent.setup()
 		render(<LoanDetails />)
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
 		expect(screen.getByText('Please select loan term.'))
 	});
 	
-	it('simulate filling info', async () => {
+	it('simulates filling info', async () => {
 		const navigate = vi.fn();
 		vi.mocked(useNavigate).mockReturnValue(navigate);
 		const user = userEvent.setup()
 		render(<LoanDetails />)
-		await user.type(screen.getByRole('spinbutton', { name: /Approximate vehicle price/i }), '22000')
-		await user.type(screen.getByRole('spinbutton', { name: /Deposit/i }), '2000')
-		await user.selectOptions(screen.getByRole('combobox', { name: /Purpose/i }), 'Vehicle')
-		await user.selectOptions(screen.getByRole('combobox', { name: /Term/i }), '2 years')
+
+		await user.selectOptions(screen.getByRole('combobox', { name: /Loan Purpose/i }), 'Vehicle')
+		await user.selectOptions(screen.getByRole('combobox', { name: /Loan Term/i }), '2 years')
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+		expect(navigate).toHaveBeenCalledWith('/results');
 	});
 })

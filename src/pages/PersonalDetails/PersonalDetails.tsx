@@ -3,14 +3,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSessionStorage } from "@uidotdev/usehooks";
+import { personalFormSchema, EmploymentStatuses } from '../../schemas/personalDetails';
 import { Field, Select } from '../../components/Field'
 import Button from '../../components/Button'
-
-enum EmploymentStatuses {
-  Employed = "Employed",
-  Unemployed = "Unemployed",
-  SelfEmployed = 'SelfEmployed',
-}
 
 const EmploymentOptions: Record<EmploymentStatuses, string> = {
   [EmploymentStatuses.Employed]: "Employed",
@@ -18,36 +13,9 @@ const EmploymentOptions: Record<EmploymentStatuses, string> = {
   [EmploymentStatuses.SelfEmployed]: "Self-Employed",
 }
 
-const personalFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: 'Please provide your first name.' }),
-  lastName: z
-    .string()
-    .min(1, { message: 'Please provide your last name.' }),
-  email: z
-    .string()
-    .min(1, { message: 'Please provide your email address.' })
-    .email({ message: 'Please enter a valid email address.' }),
-  employmentStatus: z.nativeEnum(EmploymentStatuses, {
-    message: 'Please choose one of the options'
-  }),
-  employerName: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (data.employmentStatus === EmploymentStatuses.Employed) {
-    if (data.employerName === undefined || data.employerName === '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Please provide your current employer name.',
-        path: ['employerName']
-      })
-    }
-  }
-})
-
 export default function PersonalDetails() {
   const navigate = useNavigate()
-  const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', { personalDetails: {} });
+  const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', { personalDetails: {} })
   const {
     register,
     watch,

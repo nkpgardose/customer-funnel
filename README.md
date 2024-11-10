@@ -35,9 +35,9 @@ Also, application also use the following:
 
 - [nock](https://github.com/nock/nock) for mocking API calls.
 
-## Functionality tests
+## end to end tests
 
-Application is using [Cypress](https://www.cypress.io/) to validate functionality, To run the tests, simply run:
+Application is using [Cypress](https://www.cypress.io/) to validate functionality and end to end tests, To run the tests, simply run:
 
 ```
 $ npm run cypress:open # to open cypress browser.
@@ -45,4 +45,5 @@ $ npm run cypress:headless # to run all tests in headless mode.
 ```
 
 > [!NOTE]
-> The endpoints being used in the cypress run is on a different service.
+> This application is using deployed API. If you want to run the application locally,
+> update the `API_URL` in `src/config.ts` to `http://localhost:3000` 
