@@ -3,4 +3,12 @@
 	--content-color: #333;
 	--surface-color: #fff;
 	--border-color: #4d4d4d;
+	--border-radius: .5rem;
+	--primary-fade-color: hsl(157, 70%, 65%);
+	--primary-color: #3cdd9f;
+	--primary-dim-color: hsl(157, 70%, 45%);
+	--secondary-fade-color: hsl(345, 76%, 54%);
+	--secondary-color: #c51b46;
+	--secondary-dim-color: hsl(345, 76%, 34%);
+	--layout-max-width: 90rem;
 }

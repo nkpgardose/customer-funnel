@@ -1,5 +1,6 @@
 import { ReactNode, InputHTMLAttributes } from 'react'
 import { UseFormRegisterReturn } from 'react-hook-form'
+import styles from './Field.module.css'
 
 interface FieldProps {
 	/**
@@ -7,11 +8,15 @@ interface FieldProps {
 	 * 
 	 * See more: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label
 	 */
-	fieldFor: string,
+	fieldFor: string
 	/**
 	 * Label text to indicate input's information or responsibility.
 	 */
-	labelText?: ReactNode,
+	labelText: ReactNode
+	/**
+	 * Label style variant, indicating field is required.
+	 */
+	isLabelRequired?: boolean,
 	/**
 	 * Supporting `react-hook-form` register result.
 	 * 
@@ -22,7 +27,7 @@ interface FieldProps {
 	 * />
 	 * ```
 	 */
-	registerResult?: UseFormRegisterReturn,
+	registerResult?: UseFormRegisterReturn
 	/**
 	 * Input attributes i.e. disabled, aria-label, maxLengt, etc.
 	 * It may overrides some Field's attributes default behaviour.
@@ -40,16 +45,32 @@ interface FieldProps {
 export default function Field({
 	fieldFor,
 	labelText,
+	isLabelRequired = false,
 	registerResult,
 	labelAttributes,
 	inputAttributes,
 	errorMessage,
 }: FieldProps) {
 	return (
-		<div>
-			{labelText ? <label htmlFor={fieldFor} {...labelAttributes}>{labelText}</label> : null}
-			<input id={fieldFor} {...registerResult} {...inputAttributes} />
-			{errorMessage ? <p>{errorMessage}</p> : null}
+		<div className={styles.Field}>
+			{labelText ?
+				<label
+					className={styles.label}
+					htmlFor={fieldFor}
+					{...labelAttributes}
+				>
+					{labelText}
+					{isLabelRequired ? <span className={styles.labelRequired}>*</span> : null}
+				</label>
+				: null
+			}
+			<input
+				className={errorMessage ? styles.inputWithError : styles.input}
+				id={fieldFor}
+				{...registerResult}
+				{...inputAttributes}
+			/>
+			{errorMessage ? <p className={styles.error}>{errorMessage}</p> : null}
 		</div>
 	)
 }

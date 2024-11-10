@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import Field from './components/Field'
+import { Field, Select } from './components/Field'
+import Button from './components/Button'
 import styles from './App.module.css'
 
 enum EmploymentStatuses {
@@ -27,7 +28,9 @@ const personalFormSchema = z.object({
     .string()
     .min(1, { message: 'Please provide your email address.' })
     .email({ message: 'Please enter a valid email address.' }),
-  employmentStatus: z.nativeEnum(EmploymentStatuses),
+  employmentStatus: z.nativeEnum(EmploymentStatuses, {
+    message: 'Please choose one of the options'
+  }),
 });
 
 function App() {
@@ -44,44 +47,51 @@ function App() {
   }
 
   return (
-    <main>
+    <main className={styles.App}>
       <section>
-        <h1 className={styles.App}>Fill in your details</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className={styles.Form} onSubmit={handleSubmit(onSubmit)}>
+          <h1>Fill in your personal details</h1>
           <Field
             fieldFor="first-name-field"
             labelText="First Name"
+            isLabelRequired={!(personalFormSchema.shape.firstName instanceof z.ZodOptional)}
             registerResult={register('firstName')}
             errorMessage={errors.firstName?.message}
           />
           <Field
             fieldFor="last-name-field"
             labelText="Last Name"
+            isLabelRequired={!(personalFormSchema.shape.lastName instanceof z.ZodOptional)}
             registerResult={register('lastName')}
             errorMessage={errors.lastName?.message}
           />
           <Field
             fieldFor="email-field"
             labelText="Email"
+            isLabelRequired={!(personalFormSchema.shape.email instanceof z.ZodOptional)}
             inputAttributes={{
               type: 'email'
             }}
             registerResult={register('email')}
             errorMessage={errors.email?.message}
           />
-          <div>
-            <label htmlFor="employment-status-select">Employment Status</label>
-            <select id="employment-status-select" {...register('employmentStatus')}>
+          <Select
+            selectFor='employment-status-select'
+            labelText="Employment Status"
+            isLabelRequired={!(personalFormSchema.shape.employmentStatus instanceof z.ZodOptional)}
+            registerResult={register('employmentStatus')}
+            errorMessage={errors.employmentStatus?.message}
+          >
               <option value="">Open to see selections</option>
               {Object.entries(EmploymentOptions).map(item => {
                 return (
                   <option key={item[0]} value={item[0]}>{item[1]}</option>
                 );
               })}
-            </select>
-            {errors.employmentStatus && <span>Please select your employment status.</span>}
+          </Select>
+          <div className={styles.actions}>
+            <Button variant="primary" type="submit">Continue</Button>
           </div>
-          <button type="submit">Continue</button>
         </form>
       </section>
     </main>

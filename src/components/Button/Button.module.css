@@ -1,0 +1,32 @@
+.Button {
+	appearance: none;
+	background-color: var(--surface-color);
+	border-radius: var(--border-radius);
+	border: 1.5px solid var(--border-color);
+	color: var(--content-color);
+	cursor: pointer;
+	font-family: var(--font-family-sans-serif);
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1.5;
+	padding: .5rem 1rem;
+}
+
+.Button.primary {
+	background-color: var(--primary-color);
+	border-color: var(--primary-dim-color);
+}
+
+.Button.primary:hover,
+.Button.primary:focus {
+	background-color: var(--primary-dim-color);
+}
+
+.Button.secondary {
+	background-color: var(--secondary-color);
+}
+
+.Button.secondary:hover,
+.Button.secondary:focus {
+	background-color: var(--secondary-dim-color);
+}

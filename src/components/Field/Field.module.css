@@ -1,0 +1,44 @@
+.Field > .label,
+.Field > .input,
+.Field > .error {
+	color: var(--content-color);
+	margin: 0 0 .5rem 0;
+}
+
+.Field > .label {
+	font-size: 1rem;
+	line-height: 1.5;
+	font-weight: 600;
+	display: block;
+}
+
+.Field > .label > .labelRequired {
+	color: var(--secondary-color);
+}
+
+.Field > .input,
+.Field > .inputWithError {
+	font-size: 1rem;
+	padding: .5rem 1rem;
+	border-radius: var(--border-radius);
+	border: 1px solid var(--border-color);
+	min-width: 20rem;
+	width: 100%;
+}
+
+.Field > .inputWithError {
+	border-color: var(--secondary-color);
+}
+
+.Field > .error {
+	font-size: .75rem;
+	color: var(--secondary-color);
+	padding: 0;
+}
+
+@media (min-width: 743px) {
+	.Field > .input,
+	.Field > .inputWithError {
+		width: auto;
+	}
+}

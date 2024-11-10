@@ -1,3 +1,4 @@
-import Field from "./Field";
+import Field from "./Field"
+import Select from './Select'
 
-export default Field;
+export { Field, Select }
