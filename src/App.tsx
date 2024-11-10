@@ -31,16 +31,29 @@ const personalFormSchema = z.object({
   employmentStatus: z.nativeEnum(EmploymentStatuses, {
     message: 'Please choose one of the options'
   }),
-});
+  employerName: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if(data.employmentStatus === EmploymentStatuses.Employed) {
+    if(data.employerName === undefined || data.employerName === '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please provide your current employer name.',
+        path: ["employerName"]
+      })
+    }
+  }
+})
 
 function App() {
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<z.infer<typeof personalFormSchema>>({
     resolver: zodResolver(personalFormSchema)
   })
+  const watchEmploymentStatus = watch('employmentStatus');
 
   function onSubmit(data: z.infer<typeof personalFormSchema>) {
     console.log(data);
@@ -54,21 +67,21 @@ function App() {
           <Field
             fieldFor="first-name-field"
             labelText="First Name"
-            isLabelRequired={!(personalFormSchema.shape.firstName instanceof z.ZodOptional)}
+            isLabelRequired
             registerResult={register('firstName')}
             errorMessage={errors.firstName?.message}
           />
           <Field
             fieldFor="last-name-field"
             labelText="Last Name"
-            isLabelRequired={!(personalFormSchema.shape.lastName instanceof z.ZodOptional)}
+            isLabelRequired
             registerResult={register('lastName')}
             errorMessage={errors.lastName?.message}
           />
           <Field
             fieldFor="email-field"
             labelText="Email"
-            isLabelRequired={!(personalFormSchema.shape.email instanceof z.ZodOptional)}
+            isLabelRequired
             inputAttributes={{
               type: 'email'
             }}
@@ -78,17 +91,26 @@ function App() {
           <Select
             selectFor='employment-status-select'
             labelText="Employment Status"
-            isLabelRequired={!(personalFormSchema.shape.employmentStatus instanceof z.ZodOptional)}
+            isLabelRequired
             registerResult={register('employmentStatus')}
             errorMessage={errors.employmentStatus?.message}
           >
-              <option value="">Open to see selections</option>
-              {Object.entries(EmploymentOptions).map(item => {
-                return (
-                  <option key={item[0]} value={item[0]}>{item[1]}</option>
-                );
-              })}
+            <option value="">Open to see selections</option>
+            {Object.entries(EmploymentOptions).map(item => {
+              return (
+                <option key={item[0]} value={item[0]}>{item[1]}</option>
+              );
+            })}
           </Select>
+          {watchEmploymentStatus === EmploymentStatuses.Employed ? (
+            <Field
+              fieldFor="employer-name-field"
+              labelText="Employer Name"
+              isLabelRequired
+              registerResult={register('employerName')}
+              errorMessage={errors.employerName?.message}
+            />
+          ) : null}
           <div className={styles.actions}>
             <Button variant="primary" type="submit">Continue</Button>
           </div>
