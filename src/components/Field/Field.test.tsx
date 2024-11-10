@@ -63,6 +63,6 @@ describe('Field', () => {
 
 		expect(onSubmit.mock.calls[0][0]).toEqual({
 			firstName: "SampleName"
-		});
+		})
 	})
 })

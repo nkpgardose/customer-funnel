@@ -16,4 +16,4 @@ describe('<Button />', () => {
 		await user.click(screen.getByRole('button', { name: 'Create' }))
 		expect(onClick).toHaveBeenCalled()
 	})
-});
+})
