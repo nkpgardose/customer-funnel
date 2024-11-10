@@ -26,12 +26,12 @@ const MIN_VEHICLE_PRICE = 2_000
 const MAX_VEHICLE_PRICE = 200_000
 const MIN_DEPOSIT_PRICE = 0;
 const MAX_DEPOSIT_PRICE = 200_000
+const MIN_LOAN_TERM = 1
+const MAX_LOAN_TERM = 7
 const DEFAULT_VEHICLE_PRICE_VALIDATION = `Please enter amount between $${MIN_VEHICLE_PRICE} and $${MAX_VEHICLE_PRICE}`
 const DEFAULT_DEPOSIT_VALIDATION = `Deposit amount should be greater than $${MIN_DEPOSIT_PRICE}`
 const FORMATTED_MIN_VEHICLE_PRICE = audCurrencyFormat.format(MIN_VEHICLE_PRICE)
 const FORMATTED_MIN_LOAN_AMOUNT = audCurrencyFormat.format(MIN_LOAN_AMOUNT)
-
-// vehicle price - depost > 2000
 const loanFormSchema = z.object({
 	vehiclePrice: z
 		.number({ invalid_type_error: DEFAULT_VEHICLE_PRICE_VALIDATION })
@@ -47,10 +47,12 @@ const loanFormSchema = z.object({
 		}),
 	loanPurpose: z.nativeEnum(LoanPurposes, {
 		message: "Please choose one of the options"
-	})
+	}),
+	loanTerm: z
+		.number({ invalid_type_error: 'Please select loan term.' })
+		.min(1, { message: 'Please select loan term.' })
+		.max(7, { message: 'Please select loan term between 1 to 7 years.' })
 }).superRefine((data, ctx) => {
-	console.log(data.vehiclePrice, data.deposit, Math.max(0, data.vehiclePrice - data.deposit));
-	console.log(Math.max(0, data.vehiclePrice - data.deposit) < MIN_LOAN_AMOUNT)
 	if(Math.max(0, data.vehiclePrice - data.deposit) < MIN_LOAN_AMOUNT) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.custom,
@@ -58,7 +60,7 @@ const loanFormSchema = z.object({
 				The minimum loan amount that our lenders accept is ${FORMATTED_MIN_LOAN_AMOUNT}.
 				Adjust your vehicle price or deposit to meet the minimum requirement.
 			`,
-			path: ['general']
+			path: ['loanTerm']
 		})
 	}
 })
@@ -129,7 +131,23 @@ export default function LoanDetails() {
 							)
 						})}
           </Select>
-					{/* {errors.general?.message && <p><em>{errors.general?.message}</em></p>} */}
+					<Select
+						selectFor='loan-term-select'
+						labelText="Loan Term"
+						isLabelRequired
+						registerResult={register('loanTerm', { valueAsNumber: true })}
+						errorMessage={errors.loanTerm?.message}
+					>
+            <option value="">Open to see selections</option>
+						{Array(MAX_LOAN_TERM + 1).fill(MIN_LOAN_TERM, MIN_LOAN_TERM).map((_el, index) => (
+							<option
+								key={index}
+								value={index}
+							>
+								{index} years
+							</option>
+						))}
+          </Select>
           <div className={styles.actions}>
             <Button variant="primary" type="submit">Continue</Button>
           </div>
