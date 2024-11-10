@@ -1,9 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Field, Select } from '../../components/Field'
 import Button from '../../components/Button'
-import styles from '../../App.module.css'
 
 enum LoanPurposes {
 	Vehicle = 'Vehicle',
@@ -53,7 +53,7 @@ const loanFormSchema = z.object({
 		.min(1, { message: 'Please select loan term.' })
 		.max(7, { message: 'Please select loan term between 1 to 7 years.' })
 }).superRefine((data, ctx) => {
-	if(Math.max(0, data.vehiclePrice - data.deposit) < MIN_LOAN_AMOUNT) {
+	if (Math.max(0, data.vehiclePrice - data.deposit) < MIN_LOAN_AMOUNT) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.custom,
 			message: `
@@ -66,93 +66,89 @@ const loanFormSchema = z.object({
 })
 
 export default function LoanDetails() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<z.infer<typeof loanFormSchema>>({
-    resolver: zodResolver(loanFormSchema),
+	const navigate = useNavigate()
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<z.infer<typeof loanFormSchema>>({
+		resolver: zodResolver(loanFormSchema),
 		defaultValues: {
 			vehiclePrice: MIN_VEHICLE_PRICE,
 			deposit: MIN_DEPOSIT_PRICE,
 		}
-  })
+	})
 
-  function onSubmit(data: z.infer<typeof loanFormSchema>) {
-    console.log(data)
-  }
+	function onSubmit(data: z.infer<typeof loanFormSchema>) {
+		console.log(data)
+		navigate('/results');
+	}
 
 	return (
-    <main className={styles.App}>
-      <section>
-        <form className={styles.Form} onSubmit={handleSubmit(onSubmit)}>
-          <h1>Fill in loan details</h1>
-					<Field
-						fieldFor="vechicle-price-field"
-						labelText="Approximate vechicle price"
-						isLabelRequired
-						registerResult={register('vehiclePrice', { valueAsNumber: true })}
-						errorMessage={errors.vehiclePrice?.message}
-						inputAttributes={{
-							inputMode: 'decimal',
-							placeholder: FORMATTED_MIN_VEHICLE_PRICE,
-							type: 'number',
-							min: MIN_VEHICLE_PRICE,
-							max: MAX_VEHICLE_PRICE,
-							step: 100,
-						}}
-					/>
-					<Field
-						fieldFor="deposit-field"
-						labelText="Deposit amount"
-						isLabelRequired
-						registerResult={register('deposit', { valueAsNumber: true })}
-						errorMessage={errors.deposit?.message}
-						inputAttributes={{
-							inputMode: 'decimal',
-							placeholder: "$0",
-							type: 'number',
-							min: MIN_DEPOSIT_PRICE,
-							max: MAX_DEPOSIT_PRICE,
-							step: 100,
-						}}
-					/>
-					<Select
-						selectFor='loan-purpose-select'
-						labelText="Loan Purpose"
-						isLabelRequired
-						registerResult={register('loanPurpose')}
-						errorMessage={errors.loanPurpose?.message}
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<h1>Fill in loan details</h1>
+			<Field
+				fieldFor="vechicle-price-field"
+				labelText="Approximate vehicle price"
+				isLabelRequired
+				registerResult={register('vehiclePrice', { valueAsNumber: true })}
+				errorMessage={errors.vehiclePrice?.message}
+				inputAttributes={{
+					inputMode: 'decimal',
+					placeholder: FORMATTED_MIN_VEHICLE_PRICE,
+					type: 'number',
+					min: MIN_VEHICLE_PRICE,
+					max: MAX_VEHICLE_PRICE,
+					step: 100,
+				}}
+			/>
+			<Field
+				fieldFor="deposit-field"
+				labelText="Deposit amount"
+				isLabelRequired
+				registerResult={register('deposit', { valueAsNumber: true })}
+				errorMessage={errors.deposit?.message}
+				inputAttributes={{
+					inputMode: 'decimal',
+					placeholder: "$0",
+					type: 'number',
+					min: MIN_DEPOSIT_PRICE,
+					max: MAX_DEPOSIT_PRICE,
+					step: 100,
+				}}
+			/>
+			<Select
+				selectFor='loan-purpose-select'
+				labelText="Loan Purpose"
+				isLabelRequired
+				registerResult={register('loanPurpose')}
+				errorMessage={errors.loanPurpose?.message}
+			>
+				<option value="">Open to see selections</option>
+				{Object.entries(LoanPurposesOptions).map(item => {
+					return (
+						<option key={item[0]} value={item[0]}>{item[1]}</option>
+					)
+				})}
+			</Select>
+			<Select
+				selectFor='loan-term-select'
+				labelText="Loan Term"
+				isLabelRequired
+				registerResult={register('loanTerm', { valueAsNumber: true })}
+				errorMessage={errors.loanTerm?.message}
+			>
+				<option value="">Open to see selections</option>
+				{Array(MAX_LOAN_TERM + 1).fill(MIN_LOAN_TERM, MIN_LOAN_TERM).map((_el, index) => (
+					<option
+						key={index}
+						value={index}
 					>
-            <option value="">Open to see selections</option>
-						{Object.entries(LoanPurposesOptions).map(item => {
-							return (
-								<option key={item[0]} value={item[0]}>{item[1]}</option>
-							)
-						})}
-          </Select>
-					<Select
-						selectFor='loan-term-select'
-						labelText="Loan Term"
-						isLabelRequired
-						registerResult={register('loanTerm', { valueAsNumber: true })}
-						errorMessage={errors.loanTerm?.message}
-					>
-            <option value="">Open to see selections</option>
-						{Array(MAX_LOAN_TERM + 1).fill(MIN_LOAN_TERM, MIN_LOAN_TERM).map((_el, index) => (
-							<option
-								key={index}
-								value={index}
-							>
-								{index} years
-							</option>
-						))}
-          </Select>
-          <div className={styles.actions}>
-            <Button variant="primary" type="submit">Continue</Button>
-          </div>
-        </form>
-      </section>
-    </main>
+						{index} years
+					</option>
+				))}
+			</Select>
+			<Button variant="primary" type="submit">Continue</Button>
+		</form>
 	)
 }

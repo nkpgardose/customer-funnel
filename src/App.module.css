@@ -1,18 +1,13 @@
 .App {
 	color: var(--content-color);
 	display: grid;
-	height: 100%;
 	margin: 0 auto;
 	max-width: var(--layout-max-width);
 	padding: 5rem 1rem;
 	width: 100%;
 }
 
-.Form {
+.App > .section {
 	max-width: 20rem;
 	margin: 0 auto;
-}
-
-.Form > .actions {
-	padding: 1rem 0;
 }
