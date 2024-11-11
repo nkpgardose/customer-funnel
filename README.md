@@ -22,6 +22,11 @@ $ npm run dev
 
 Open http://localhost:5173 with your browser to see the result.
 
+To run the customer funnel without the server: simply update the `VITE_API_BASE_URL` in the `.env.local` file to point to the API server https://customer-server.fly.dev/api/v1
+
+When running the server locally, please make sure that API server is running locally as well.
+
+
 # Testing
 
 ## Unit tests
