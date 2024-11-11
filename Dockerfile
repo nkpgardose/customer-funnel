@@ -27,6 +27,8 @@ RUN npm ci --include=dev
 # Copy application code
 COPY . .
 
+ARG VITE_API_BASE_URL=https://customer-server.fly.dev/api/v1
+
 # Build application
 RUN npm run build
 
