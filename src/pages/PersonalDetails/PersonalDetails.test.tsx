@@ -26,11 +26,11 @@ describe('PersonalDetails', () => {
 		expect(screen.getByText('Please provide your last name.'))
 		expect(screen.getByText('Please provide your email address.'))
 		expect(screen.getByText('Please choose one of the options'))
-	});
+	})
 	
 	it('simulates filling info', async () => {
-		const navigate = vi.fn();
-		vi.mocked(useNavigate).mockReturnValue(navigate);
+		const navigate = vi.fn()
+		vi.mocked(useNavigate).mockReturnValue(navigate)
 		const user = userEvent.setup()
 		render(<PersonalDetails />)
 		await user.type(screen.getByRole('textbox', { name: /First Name/i }), 'Neil')
@@ -38,6 +38,6 @@ describe('PersonalDetails', () => {
 		await user.type(screen.getByRole('textbox', { name: /Email/i }), 'sample@email.com')
 		await user.selectOptions(screen.getByRole('combobox', { name: /Employment Status/i }), 'Unemployed')
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
-		expect(navigate).toHaveBeenCalledWith('/loan-details');
-	});
+		expect(navigate).toHaveBeenCalledWith('/loan-details')
+	})
 })

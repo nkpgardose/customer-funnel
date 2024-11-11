@@ -12,6 +12,7 @@ The project is using [vite](https://vite.dev/guide/) for building a client-side 
 $ node --version # should be v22+
 $ npm install # install dependencies
 ```
+Copy the `.env.example` file to `.env.local` to use appropriate environment variables to your local.
 
 To run the customer funnel:
 

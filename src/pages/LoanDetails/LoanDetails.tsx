@@ -20,10 +20,10 @@ const LoanPurposesOptions: Record<LoanPurposes, string> = {
 	[LoanPurposes.HomeImprovement]: "Home Improvement",
 }
 
-
 export default function LoanDetails() {
 	const navigate = useNavigate()
   const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', {
+		personalDetails: { id: null },
 		loanDetails: {}
 	})
 	const {
@@ -40,11 +40,54 @@ export default function LoanDetails() {
 	})
 
 	function onSubmit(data: z.infer<typeof loanFormSchema>) {
-		setCustomerStorageData({
-			...customerStorageData,
-			loanDetails: data
+		const {
+			vehiclePrice: price,
+			deposit,
+			loanPurpose: loan_purpose,
+			loanTerm: loan_term,
+		} = data;
+
+		fetch(`${import.meta.env.VITE_API_BASE_URL}/loan-details`, {
+      method: "POST",
+			headers: {
+        'Content-Type': 'application/json'
+      },
+			body: JSON.stringify({
+				customer_id: customerStorageData.personalDetails.id,
+				price,
+				deposit,
+				loan_purpose,
+				loan_term
+      })
+		}).then((response) => {
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`)
+			}
+
+			return response.json()
+		}).then(({
+			id,
+			customer_id,
+			price,
+			deposit,
+			loan_purpose,
+			loan_term,
+		}) => {
+			setCustomerStorageData({
+				...customerStorageData,
+				loanDetails: {
+					id,
+					customer_id,
+					price,
+					deposit,
+					loan_purpose,
+					loan_term,			
+				}
+			})
+			navigate('/results')
+		}).catch(err => {
+			console.error(err)
 		})
-		navigate('/results')
 	}
 
 	return (
@@ -62,7 +105,6 @@ export default function LoanDetails() {
 					type: 'number',
 					min: MIN_VEHICLE_PRICE,
 					max: MAX_VEHICLE_PRICE,
-					step: 100,
 				}}
 			/>
 			<Field
@@ -77,7 +119,6 @@ export default function LoanDetails() {
 					type: 'number',
 					min: MIN_DEPOSIT_PRICE,
 					max: MAX_DEPOSIT_PRICE,
-					step: 100,
 				}}
 			/>
 			<Select

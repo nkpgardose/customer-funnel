@@ -14,8 +14,10 @@ const EmploymentOptions: Record<EmploymentStatuses, string> = {
 }
 
 export default function PersonalDetails() {
-  const navigate = useNavigate()
-  const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', { personalDetails: {} })
+  const [customerStorageData, setCustomerStorageData] =
+    useSessionStorage('customer-personal-data', {
+      personalDetails: {}
+    })
   const {
     register,
     watch,
@@ -25,14 +27,62 @@ export default function PersonalDetails() {
     resolver: zodResolver(personalFormSchema),
     defaultValues: customerStorageData.personalDetails
   })
+  const navigate = useNavigate()
   const watchEmploymentStatus = watch('employmentStatus')
 
   function onSubmit(data: z.infer<typeof personalFormSchema>) {
-    setCustomerStorageData({
-      ...customerStorageData,
-      personalDetails: data
+    const {
+      firstName: first_name,
+      lastName: last_name,
+      email,
+      employmentStatus: employment_status,
+      employerName: employer_name
+    } = data;
+
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/customers`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        first_name,
+        last_name,
+        email,
+        employment_status,
+        employer_name,
+      })
     })
-    navigate('/loan-details')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then(({
+        id,
+        first_name,
+        last_name,
+        email,
+        employment_status,
+        employer_name
+      }) => {
+        setCustomerStorageData({
+          ...customerStorageData,
+          personalDetails: {
+            id,
+            firstName: first_name,
+            lastName: last_name,
+            email,
+            employmentStatus: employment_status,
+            employmentName: employer_name
+          }
+        })
+
+        navigate('/loan-details')
+      }).catch(err => {
+        console.error(err)
+      })
   }
 
   return (

@@ -23,11 +23,11 @@ describe('LoanDetails', () => {
 		render(<LoanDetails />)
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
 		expect(screen.getByText('Please select loan term.'))
-	});
+	})
 	
 	it('simulates filling info', async () => {
-		const navigate = vi.fn();
-		vi.mocked(useNavigate).mockReturnValue(navigate);
+		const navigate = vi.fn()
+		vi.mocked(useNavigate).mockReturnValue(navigate)
 		const user = userEvent.setup()
 		render(<LoanDetails />)
 
@@ -35,6 +35,6 @@ describe('LoanDetails', () => {
 		await user.selectOptions(screen.getByRole('combobox', { name: /Loan Term/i }), '2 years')
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
 
-		expect(navigate).toHaveBeenCalledWith('/results');
-	});
+		expect(navigate).toHaveBeenCalledWith('/results')
+	})
 })
