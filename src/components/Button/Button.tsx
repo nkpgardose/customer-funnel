@@ -1,8 +1,8 @@
-import { ButtonHTMLAttributes } from 'react'
-import styles from './Button.module.css'
+import { ButtonHTMLAttributes } from 'react';
+import styles from './Button.module.css';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	variant?: 'primary' | 'secondary' | ''
+	variant?: 'primary' | 'secondary' | '';
 }
 
 export default function Button({
@@ -10,15 +10,15 @@ export default function Button({
 	children,
 	...props
 }: ButtonProps) {
-	let buttonClasses = styles.Button
+	let buttonClasses = styles.Button;
 
-	if(variant) {
-		buttonClasses += ` ${styles[variant]}`
+	if (variant) {
+		buttonClasses += ` ${styles[variant]}`;
 	}
 
 	return (
 		<button type="button" className={buttonClasses} {...props}>
 			{children}
 		</button>
-	)
+	);
 }

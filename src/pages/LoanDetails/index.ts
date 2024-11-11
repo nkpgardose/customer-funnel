@@ -1,3 +1,3 @@
-import LoanDetails from './LoanDetails'
+import LoanDetails from './LoanDetails';
 
-export default LoanDetails
+export default LoanDetails;

@@ -1,16 +1,16 @@
-import { InputHTMLAttributes, ReactNode } from "react"
-import { UseFormRegisterReturn } from "react-hook-form"
-import styles from './Field.module.css'
+import { InputHTMLAttributes, ReactNode } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
+import styles from './Field.module.css';
 
 interface SelectProps {
-	selectFor: string
-	labelText: ReactNode
-	isLabelRequired?: boolean,
-	registerResult?: UseFormRegisterReturn
-	selectAttributes?: InputHTMLAttributes<HTMLSelectElement>
-	labelAttributes?: InputHTMLAttributes<HTMLLabelElement>
-	errorMessage?: string
-	children: ReactNode
+	selectFor: string;
+	labelText: ReactNode;
+	isLabelRequired?: boolean;
+	registerResult?: UseFormRegisterReturn;
+	selectAttributes?: InputHTMLAttributes<HTMLSelectElement>;
+	labelAttributes?: InputHTMLAttributes<HTMLLabelElement>;
+	errorMessage?: string;
+	children: ReactNode;
 }
 
 export default function Select({
@@ -21,22 +21,22 @@ export default function Select({
 	labelAttributes,
 	selectAttributes,
 	errorMessage,
-	children
+	children,
 }: SelectProps) {
 	return (
 		<div className={styles.Field}>
-			{
-				labelText ?
-					<label
-						className={styles.label}
-						htmlFor={selectFor}
-						{...labelAttributes}
-					>
-						{labelText}
-						{isLabelRequired ? <span className={styles.labelRequired}>*</span> : null}
-					</label>
-					: null
-			}
+			{labelText ? (
+				<label
+					className={styles.label}
+					htmlFor={selectFor}
+					{...labelAttributes}
+				>
+					{labelText}
+					{isLabelRequired ? (
+						<span className={styles.labelRequired}>*</span>
+					) : null}
+				</label>
+			) : null}
 			<select
 				className={errorMessage ? styles.inputWithError : styles.input}
 				id={selectFor}
@@ -47,5 +47,5 @@ export default function Select({
 			</select>
 			{errorMessage ? <p className={styles.error}>{errorMessage}</p> : null}
 		</div>
-	)
+	);
 }

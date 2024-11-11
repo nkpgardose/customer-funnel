@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useSessionStorage } from "@uidotdev/usehooks";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSessionStorage } from '@uidotdev/usehooks';
 import {
-	LoanPurposes, loanFormSchema,
+	LoanPurposes,
+	loanFormSchema,
 	FORMATTED_MIN_VEHICLE_PRICE,
 	MAX_DEPOSIT_PRICE,
 	MAX_LOAN_TERM,
@@ -14,21 +15,26 @@ import {
 	MIN_LOAN_TERM,
 	MIN_VEHICLE_PRICE,
 } from '../../schemas/loanDetails';
-import { Field, Select } from '../../components/Field'
-import Button from '../../components/Button'
+import { Field, Select } from '../../components/Field';
+import Button from '../../components/Button';
 
 const LoanPurposesOptions: Record<LoanPurposes, string> = {
-	[LoanPurposes.Vehicle]: "Vehicle",
-	[LoanPurposes.HomeImprovement]: "Home Improvement",
-}
+	[LoanPurposes.Vehicle]: 'Vehicle',
+	[LoanPurposes.HomeImprovement]: 'Home Improvement',
+};
 
 export default function LoanDetails() {
-	const [fetchStatus, setFetchStatus] = useState<'loading' | 'error' | 'default'>('default');
-	const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', {
-		personalDetails: { id: null },
-		loanDetails: {}
-	})
-	const navigate = useNavigate()
+	const [fetchStatus, setFetchStatus] = useState<
+		'loading' | 'error' | 'default'
+	>('default');
+	const [customerStorageData, setCustomerStorageData] = useSessionStorage(
+		'customer-personal-data',
+		{
+			personalDetails: { id: null },
+			loanDetails: {},
+		},
+	);
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
@@ -38,13 +44,13 @@ export default function LoanDetails() {
 		defaultValues: {
 			vehiclePrice: MIN_VEHICLE_PRICE,
 			deposit: MIN_DEPOSIT_PRICE,
-			...customerStorageData.loanDetails
-		}
-	})
+			...customerStorageData.loanDetails,
+		},
+	});
 
 	function onSubmit(data: z.infer<typeof loanFormSchema>) {
 		if (fetchStatus === 'loading') {
-			return
+			return;
 		}
 
 		const {
@@ -54,50 +60,46 @@ export default function LoanDetails() {
 			loanTerm: loan_term,
 		} = data;
 
-		setFetchStatus('loading')
+		setFetchStatus('loading');
 		fetch(`${import.meta.env.VITE_API_BASE_URL}/loan-details`, {
-			method: "POST",
+			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				customer_id: customerStorageData.personalDetails.id,
 				price,
 				deposit,
 				loan_purpose,
-				loan_term
-			})
-		}).then((response) => {
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`)
-			}
-
-			return response.json()
-		}).then(({
-			id,
-			customer_id,
-			price,
-			deposit,
-			loan_purpose,
-			loan_term,
-		}) => {
-			setFetchStatus('default')
-			setCustomerStorageData({
-				...customerStorageData,
-				loanDetails: {
-					id,
-					customer_id,
-					price,
-					deposit,
-					loan_purpose,
-					loan_term,
-				}
-			})
-			navigate('/results')
-		}).catch(err => {
-			setFetchStatus('error')
-			console.error(err)
+				loan_term,
+			}),
 		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+
+				return response.json();
+			})
+			.then(({ id, customer_id, price, deposit, loan_purpose, loan_term }) => {
+				setFetchStatus('default');
+				setCustomerStorageData({
+					...customerStorageData,
+					loanDetails: {
+						id,
+						customer_id,
+						price,
+						deposit,
+						loan_purpose,
+						loan_term,
+					},
+				});
+				navigate('/results');
+			})
+			.catch((err) => {
+				setFetchStatus('error');
+				console.error(err);
+			});
 	}
 
 	return (
@@ -125,50 +127,51 @@ export default function LoanDetails() {
 				errorMessage={errors.deposit?.message}
 				inputAttributes={{
 					inputMode: 'decimal',
-					placeholder: "$0",
+					placeholder: '$0',
 					type: 'number',
 					min: MIN_DEPOSIT_PRICE,
 					max: MAX_DEPOSIT_PRICE,
 				}}
 			/>
 			<Select
-				selectFor='loan-purpose-select'
+				selectFor="loan-purpose-select"
 				labelText="Loan Purpose"
 				isLabelRequired
 				registerResult={register('loanPurpose')}
 				errorMessage={errors.loanPurpose?.message}
 			>
 				<option value="">Open to see selections</option>
-				{Object.entries(LoanPurposesOptions).map(item => {
+				{Object.entries(LoanPurposesOptions).map((item) => {
 					return (
-						<option key={item[0]} value={item[0]}>{item[1]}</option>
-					)
+						<option key={item[0]} value={item[0]}>
+							{item[1]}
+						</option>
+					);
 				})}
 			</Select>
 			<Select
-				selectFor='loan-term-select'
+				selectFor="loan-term-select"
 				labelText="Loan Term"
 				isLabelRequired
 				registerResult={register('loanTerm', { valueAsNumber: true })}
 				errorMessage={errors.loanTerm?.message}
 			>
 				<option value="">Open to see selections</option>
-				{Array(MAX_LOAN_TERM + 1).fill(MIN_LOAN_TERM, MIN_LOAN_TERM).map((_el, index) => (
-					<option
-						key={index}
-						value={index}
-					>
-						{index} years
-					</option>
-				))}
+				{Array(MAX_LOAN_TERM + 1)
+					.fill(MIN_LOAN_TERM, MIN_LOAN_TERM)
+					.map((_el, index) => (
+						<option key={index} value={index}>
+							{index} years
+						</option>
+					))}
 			</Select>
 			<br />
 			<Button variant="primary" type="submit">
-				{
-					fetchStatus !== 'loading' ?
-						'Continue' :
-						(<span>Processing&hellip;</span>)
-				}
+				{fetchStatus !== 'loading' ? (
+					'Continue'
+				) : (
+					<span>Processing&hellip;</span>
+				)}
 			</Button>
 			{fetchStatus === 'error' && (
 				<p>
@@ -176,5 +179,5 @@ export default function LoanDetails() {
 				</p>
 			)}
 		</form>
-	)
+	);
 }
