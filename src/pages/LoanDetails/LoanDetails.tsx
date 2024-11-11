@@ -87,11 +87,11 @@ export default function LoanDetails() {
 					...customerStorageData,
 					loanDetails: {
 						id,
-						customer_id,
-						price,
+						customerId: customer_id,
+						vehiclePrice: price,
 						deposit,
-						loan_purpose,
-						loan_term,
+						loanPurpose: loan_purpose,
+						loanTerm: loan_term,
 					},
 				});
 				navigate('/results');

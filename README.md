@@ -36,11 +36,6 @@ Application is using vitest for testing react components.
 ```bash
 $ npm run test
 ```
-
-Also, application also use the following:
-
-- [nock](https://github.com/nock/nock) for mocking API calls.
-
 ## end to end tests
 
 Application is using [Cypress](https://www.cypress.io/) to validate functionality and end to end tests, To run the tests, simply run:

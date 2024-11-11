@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
-import nock from 'nock';
 import { useNavigate } from 'react-router-dom';
 import PersonalDetails from './PersonalDetails';
 
@@ -10,8 +9,6 @@ vi.mock('react-router-dom', () => ({
 }));
 
 describe('PersonalDetails', () => {
-	afterEach(nock.cleanAll);
-
 	it('renders the page', () => {
 		render(<PersonalDetails />);
 		expect(
