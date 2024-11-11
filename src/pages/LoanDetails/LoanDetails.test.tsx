@@ -26,6 +26,15 @@ describe('LoanDetails', () => {
 	})
 	
 	it('simulates filling info', async () => {
+		global.fetch = vi.fn(() =>
+			Promise.resolve({
+				ok: true,
+				status: 200,
+				json: () => Promise.resolve({
+					some: "payload"
+				}),
+			} as Response),
+		);
 		const navigate = vi.fn()
 		vi.mocked(useNavigate).mockReturnValue(navigate)
 		const user = userEvent.setup()
@@ -34,7 +43,6 @@ describe('LoanDetails', () => {
 		await user.selectOptions(screen.getByRole('combobox', { name: /Loan Purpose/i }), 'Vehicle')
 		await user.selectOptions(screen.getByRole('combobox', { name: /Loan Term/i }), '2 years')
 		await user.click(screen.getByRole('button', { name: 'Continue' }))
-
 		expect(navigate).toHaveBeenCalledWith('/results')
 	})
 })

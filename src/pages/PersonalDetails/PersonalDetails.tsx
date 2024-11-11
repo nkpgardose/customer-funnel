@@ -39,6 +39,7 @@ export default function PersonalDetails() {
       employerName: employer_name
     } = data;
 
+    console.log(`${import.meta.env.VITE_API_BASE_URL}/customers`)
     fetch(`${import.meta.env.VITE_API_BASE_URL}/customers`, {
       method: "POST",
       headers: {

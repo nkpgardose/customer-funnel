@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
+import nock from 'nock'
 import { useNavigate } from 'react-router-dom'
 import PersonalDetails from './PersonalDetails'
 
@@ -9,6 +10,8 @@ vi.mock('react-router-dom', () => ({
 }))
 
 describe('PersonalDetails', () => {
+	afterEach(nock.cleanAll)
+
 	it('renders the page', () => {
 		render(<PersonalDetails />)
 		expect(screen.getByRole('heading', { level: 1, name: "Fill in your personal details" }))
@@ -29,6 +32,21 @@ describe('PersonalDetails', () => {
 	})
 	
 	it('simulates filling info', async () => {
+		global.fetch = vi.fn(() =>
+			Promise.resolve({
+				ok: true,
+				status: 200,
+				json: () => Promise.resolve({
+					id: 1,
+					first_name: 'Neil',
+					last_name: 'Gardose',
+					email: 'sample@email.com',
+					employmentStatus: 'Unemployed',
+					employerName: '',
+				}),
+			} as Response),
+		);
+
 		const navigate = vi.fn()
 		vi.mocked(useNavigate).mockReturnValue(navigate)
 		const user = userEvent.setup()
