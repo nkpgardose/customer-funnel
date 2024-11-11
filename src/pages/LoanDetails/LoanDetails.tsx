@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { LoanPurposes, loanFormSchema, 
+import {
+	LoanPurposes, loanFormSchema,
 	FORMATTED_MIN_VEHICLE_PRICE,
 	MAX_DEPOSIT_PRICE,
 	MAX_LOAN_TERM,
@@ -21,11 +23,12 @@ const LoanPurposesOptions: Record<LoanPurposes, string> = {
 }
 
 export default function LoanDetails() {
-	const navigate = useNavigate()
-  const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', {
+	const [fetchStatus, setFetchStatus] = useState<'loading' | 'error' | 'default'>('default');
+	const [customerStorageData, setCustomerStorageData] = useSessionStorage('customer-personal-data', {
 		personalDetails: { id: null },
 		loanDetails: {}
 	})
+	const navigate = useNavigate()
 	const {
 		register,
 		handleSubmit,
@@ -40,6 +43,10 @@ export default function LoanDetails() {
 	})
 
 	function onSubmit(data: z.infer<typeof loanFormSchema>) {
+		if (fetchStatus === 'loading') {
+			return
+		}
+
 		const {
 			vehiclePrice: price,
 			deposit,
@@ -47,18 +54,19 @@ export default function LoanDetails() {
 			loanTerm: loan_term,
 		} = data;
 
+		setFetchStatus('loading')
 		fetch(`${import.meta.env.VITE_API_BASE_URL}/loan-details`, {
-      method: "POST",
+			method: "POST",
 			headers: {
-        'Content-Type': 'application/json'
-      },
+				'Content-Type': 'application/json'
+			},
 			body: JSON.stringify({
 				customer_id: customerStorageData.personalDetails.id,
 				price,
 				deposit,
 				loan_purpose,
 				loan_term
-      })
+			})
 		}).then((response) => {
 			if (!response.ok) {
 				throw new Error(`HTTP error! Status: ${response.status}`)
@@ -73,6 +81,7 @@ export default function LoanDetails() {
 			loan_purpose,
 			loan_term,
 		}) => {
+			setFetchStatus('default')
 			setCustomerStorageData({
 				...customerStorageData,
 				loanDetails: {
@@ -81,11 +90,12 @@ export default function LoanDetails() {
 					price,
 					deposit,
 					loan_purpose,
-					loan_term,			
+					loan_term,
 				}
 			})
 			navigate('/results')
 		}).catch(err => {
+			setFetchStatus('error')
 			console.error(err)
 		})
 	}
@@ -152,7 +162,19 @@ export default function LoanDetails() {
 					</option>
 				))}
 			</Select>
-			<Button variant="primary" type="submit">Continue</Button>
+			<br />
+			<Button variant="primary" type="submit">
+				{
+					fetchStatus !== 'loading' ?
+						'Continue' :
+						(<span>Processing&hellip;</span>)
+				}
+			</Button>
+			{fetchStatus === 'error' && (
+				<p>
+					<em>Something went wrong. Try again in a few minutes</em>
+				</p>
+			)}
 		</form>
 	)
 }

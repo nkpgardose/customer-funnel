@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -14,6 +15,7 @@ const EmploymentOptions: Record<EmploymentStatuses, string> = {
 }
 
 export default function PersonalDetails() {
+  const [fetchStatus, setFetchStatus] = useState<'loading' | 'error' | 'default'>('default');
   const [customerStorageData, setCustomerStorageData] =
     useSessionStorage('customer-personal-data', {
       personalDetails: {}
@@ -31,15 +33,19 @@ export default function PersonalDetails() {
   const watchEmploymentStatus = watch('employmentStatus')
 
   function onSubmit(data: z.infer<typeof personalFormSchema>) {
+    if(fetchStatus === 'loading') {
+      return
+    }
+
     const {
       firstName: first_name,
       lastName: last_name,
       email,
       employmentStatus: employment_status,
       employerName: employer_name
-    } = data;
+    } = data
 
-    console.log(`${import.meta.env.VITE_API_BASE_URL}/customers`)
+    setFetchStatus('loading')
     fetch(`${import.meta.env.VITE_API_BASE_URL}/customers`, {
       method: "POST",
       headers: {
@@ -68,6 +74,7 @@ export default function PersonalDetails() {
         employment_status,
         employer_name
       }) => {
+        setFetchStatus('default')
         setCustomerStorageData({
           ...customerStorageData,
           personalDetails: {
@@ -82,6 +89,7 @@ export default function PersonalDetails() {
 
         navigate('/loan-details')
       }).catch(err => {
+        setFetchStatus('error')
         console.error(err)
       })
   }
@@ -136,7 +144,19 @@ export default function PersonalDetails() {
           errorMessage={errors.employerName?.message}
         />
       ) : null}
-      <Button variant="primary" type="submit">Continue</Button>
+      <br />
+      <Button variant="primary" type="submit">
+        {
+          fetchStatus !== 'loading' ?
+            'Continue' :
+            (<span>Processing&hellip;</span>)
+        }
+      </Button>
+      {fetchStatus === 'error' && (
+				<p>
+					<em>Something went wrong. Try again in a few minutes</em>
+				</p>
+			)}
     </form>
   )
 }
